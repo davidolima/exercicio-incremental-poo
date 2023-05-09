@@ -100,4 +100,11 @@ public class Imovel {
     public void disponibilizarDia(int d, int m, int a){
         this.agenda.disponibilizarData(d, m, a);
     }
+
+    public boolean checarDisponibilidade(int d, int m, int a){
+        if (this.agenda.checarDisponibilidade(d, m, a)){
+            return true;
+        }
+        return false;
+    }
 }
