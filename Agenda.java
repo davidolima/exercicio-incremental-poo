@@ -49,9 +49,35 @@ public class Agenda{
     public boolean checarDisponibilidade(int d, int m, int a){
         Calendar dia = Calendar.getInstance();
         dia.set(a,m,d);
-        if (this.datas_alugadas.contains(dia) || this.datas_bloqueadas.contains(dia)){
-            return false;
+        for (int i = 0; i <= Math.max(this.datas_alugadas.size(),this.datas_bloqueadas.size());i++){
+            if (i < this.datas_alugadas.size()){
+                Calendar da = this.datas_alugadas.get(i);
+                if (da.get(Calendar.DATE)  == dia.get(Calendar.DATE)
+                    && da.get(Calendar.MONTH) == dia.get(Calendar.MONTH)
+                    && da.get(Calendar.YEAR)  == dia.get(Calendar.YEAR)){
+                    return false;
+                }
+            }
+            if (i < this.datas_bloqueadas.size()){
+                Calendar db = this.datas_bloqueadas.get(i);
+                if (db.get(Calendar.DATE)  == dia.get(Calendar.DATE)
+                    && db.get(Calendar.MONTH) == dia.get(Calendar.MONTH)
+                    && db.get(Calendar.YEAR)  == dia.get(Calendar.YEAR)){
+                    return false;
+                }
+            }
         }
         return true;
+    }
+
+    public void verEventos(){
+        System.out.println("Datas alugadas:");
+        for (Calendar d : this.datas_alugadas){
+            System.out.printf(" - %d/%d/%d\n",d.get(Calendar.DATE),d.get(Calendar.MONTH),d.get(Calendar.YEAR));
+        }
+        System.out.println("Datas bloqueadas:");
+        for (Calendar d : this.datas_bloqueadas){
+            System.out.printf(" - %d/%d/%d\n",d.get(Calendar.DATE),d.get(Calendar.MONTH),d.get(Calendar.YEAR));System.out.printf(d.toString());
+        }
     }
 }

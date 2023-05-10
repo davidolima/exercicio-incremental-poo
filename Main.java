@@ -39,6 +39,8 @@ public class Main {
 		System.out.println("> Incremento 5 ---");
 		proprietario1.disponibilizarImovel(casa_de_praia.getEndereco(), 9, 5, 23);
 		proprietario2.alugarImovel(casa_de_praia, 9, 5, 23);
-		System.out.println(casa_de_praia.checarDisponibilidade(9,5,23));
+		casa_de_praia.verAgenda();
+		System.out.printf("casa_de_praia disponivel? %b\n",casa_de_praia.checarDisponibilidade(9,5,23));
+		System.out.printf("casa_de_praia disponivel? %b\n",casa_de_praia.checarDisponibilidade(10,5,23));
 	}
 }

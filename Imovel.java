@@ -1,4 +1,3 @@
-
 public class Imovel {
 	private int iptu;
 	private TipoImovel tipo;
@@ -106,5 +105,9 @@ public class Imovel {
             return true;
         }
         return false;
+    }
+    public void verAgenda(){
+        System.out.printf("Agenda do Imóvel \"%s\"\n", this.toString());
+        this.agenda.verEventos();
     }
 }
