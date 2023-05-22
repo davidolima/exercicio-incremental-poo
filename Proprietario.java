@@ -72,4 +72,38 @@ public class Proprietario {
         }
         System.out.print("\n");
     }
+
+    public boolean disponibilizarImovel(Endereco e, int d, int m, int a){
+        for (Imovel i : this.imoveis){
+            if (i.getEndereco().equals(e)){
+                i.disponibilizarDia(d, m, a);
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean bloquearImovel(Endereco e, int d, int m, int a){
+        for (Imovel i : this.imoveis){
+            if (i.getEndereco().equals(e)){
+                i.bloquearDia(d, m, a);
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean permitirAluguelImovel(Endereco e, int d, int m, int a){
+        for (Imovel i : this.imoveis){
+            if (i.getEndereco().equals(e)){
+                i.alugarDia(d, m, a);
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean alugarImovel(Imovel i, int d, int m, int a){
+        if (i.alugarDia(d, m, a)){
+            return true;
+        }
+        return false;
+    }
 }
