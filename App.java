@@ -12,6 +12,8 @@ public class App {
   static ArrayList<Proprietario> usuarios; 
   static ArrayList<Imovel> imoveis;
 
+  static String usuario;
+
   public App() {
     // Inicialização
     running = true;
@@ -21,6 +23,7 @@ public class App {
     this.imoveis = new ArrayList<Imovel>();
     this.buffer = new HashMap<Integer, Object>();
     this.in = new Scanner(System.in);
+    this.usuario = "";
     String input;
 
     //teste
@@ -161,6 +164,8 @@ public class App {
             this.buffer.put(6, num);
             break;
           case "7":
+            // Por enquanto estados serão representados por sua posição
+            // no enum.
             System.out.printf("> ");
             num = this.in.nextInt();
             this.buffer.put(7, num);
@@ -203,10 +208,13 @@ public class App {
         }
         break;
       case SELECIONAR_PROPRIETARIO:
-        switch (input) {
-          default:
-            break;
-        }
+        // Se pensamor em muitos usuários, precisamos de paginação.
+        // Para o propósito, isso serve.
+        int i = Integer.parseInt(input);
+        System.out.println(input);
+        String nome = App.getUsuarios().get(i-1).getNome();
+        App.setUsuario(nome);
+        gerenciarVoltar();
         break;
       default:
         throw new RuntimeException("Erro: Unreachable. (gerenciarInput)");
@@ -217,7 +225,7 @@ public class App {
     tela.changeTela(this.tela_atual);
     System.out.print(tela.toString());
     System.out.print("Escolha uma opção: ");
-  }
+ }
 
   public static ArrayList<Imovel> getImoveis(){
     return App.imoveis;
@@ -225,8 +233,22 @@ public class App {
   public static ArrayList<Proprietario> getUsuarios(){
     return App.usuarios;
   }
+  public static String[] getListaUsuarios(){
+    String[] r = new String[App.usuarios.size()];
+    for (int i = 0; i < App.usuarios.size(); i++){
+      String x = App.usuarios.get(i).getNome();
+      r[i] = x;
+    }
+    return r;
+  }
   public static HashMap<Integer, Object> getMemoria(){
     return App.buffer;
+  }
+  public static void setUsuario(String nome){
+    App.usuario = nome;
+  }
+  public static String getUsuario(){
+    return App.usuario;
   }
   public static void limparMem(){
     App.buffer.clear();

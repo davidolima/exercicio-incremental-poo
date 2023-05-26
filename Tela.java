@@ -14,11 +14,11 @@ public class Tela {
   }
 
   public String toString() {
-    String out = this.titulo + " ---\n";
+    String out = this.titulo + " --- " + App.getUsuario() + "\n";
     HashMap buffer = App.getMemoria();
     for (int i = 0; i < this.desc_cmd.length; i++) {
       String desc;
-      if (buffer.get(i) == null){
+      if (buffer.isEmpty()){
         desc = this.desc_cmd[i].replace("{0}", "");
       } else {
         desc = MessageFormat.format(this.desc_cmd[i], buffer.get(i));
@@ -105,9 +105,13 @@ public class Tela {
         titulo = "Lista de Imóveis";
         break;
       case SELECIONAR_PROPRIETARIO:
-        // String[] arr = new String[App.getImoveis().size()];
         titulo = "Selecionar Proprietário";
-        desc = App.getUsuarios().toArray(desc);
+        String[] usuarios = App.getListaUsuarios();
+        desc = new String[usuarios.length+1];
+        desc[0] = "Sair";
+        for (int i = 0; i < usuarios.length; i++){
+          desc[i+1] = usuarios[i];
+        }
         break;
       default:
         throw new RuntimeException("ERRO: Unreachable. (changeTela)");
