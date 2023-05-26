@@ -14,7 +14,8 @@ public class Tela {
   }
 
   public String toString() {
-    String out = this.titulo + " --- " + App.getUsuario() + "\n";
+    // Gera a tela
+    String out = this.titulo + " --- " + App.getNomeUsuario() + "\n";
     HashMap buffer = App.getMemoria();
     for (int i = 0; i < this.desc_cmd.length; i++) {
       String desc;
@@ -41,15 +42,17 @@ public class Tela {
     // muda as informações da tela
     String titulo = "";
     String[] desc = { "Sair" };
+    String[] lista;
     switch (novaTela) {
       case PRINCIPAL:
         titulo = "Menu Principal";
         desc = new String[] {
-            "Sair/Encerrar programa",
-            "Proprietário",
-            "Imóvel",
+          "Sair/Encerrar programa",
+          "Proprietário",
+          "Imóvel",
         };
         break;
+
       case PROPRIETARIO:
         titulo = "Proprietário";
         desc = new String[] {
@@ -65,6 +68,7 @@ public class Tela {
             "Cadastrar um novo imóvel",
             "Alugar imóveis disponíveis",
             "Listar todos os imóveis",
+            "Bloquear um imóvel",
         };
         break;
       case CADASTRO_IMOVEL:
@@ -81,7 +85,19 @@ public class Tela {
             "Utilização: {0}",
             "Terminar Cadastro",
         };
-
+        break;
+      case BLOQUEAR_IMOVEL:
+        titulo = "Bloquear imóvel";
+        ArrayList<Imovel> imoveis = App.getUsuario().getImoveis();
+        if (imoveis.size() <= 0){
+          App.setMsg("Você não possui imóveis!\n");
+          break;
+        }
+        desc = new String[imoveis.size()+1];
+        desc[0] = "Sair";
+        for (int i = 0; i < imoveis.size(); i++){
+          desc[i+1] = imoveis.get(i).toString();
+        }
         break;
       case CADASTRO_PROPRIETARIO:
         titulo = "Cadastrar Proprietário";
@@ -103,14 +119,20 @@ public class Tela {
         break;
       case LISTAR_IMOVEIS:
         titulo = "Lista de Imóveis";
+        lista = App.getListaImoveis();
+        desc = new String[lista.length+1];
+        desc[0] = "Sair";
+        for (int i = 0; i < lista.length; i++){
+          desc[i+1] = lista[i];
+        }
         break;
       case SELECIONAR_PROPRIETARIO:
         titulo = "Selecionar Proprietário";
-        String[] usuarios = App.getListaUsuarios();
-        desc = new String[usuarios.length+1];
+        lista = App.getListaUsuarios();
+        desc = new String[lista.length+1];
         desc[0] = "Sair";
-        for (int i = 0; i < usuarios.length; i++){
-          desc[i+1] = usuarios[i];
+        for (int i = 0; i < lista.length; i++){
+          desc[i+1] = lista[i];
         }
         break;
       default:
