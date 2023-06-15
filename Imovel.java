@@ -1,4 +1,4 @@
-public class Imovel {
+public abstract class Imovel {
 	private int iptu;
 	private TipoImovel tipo;
 	private UtilizacaoImovel utilizacao;  
@@ -15,12 +15,12 @@ public class Imovel {
         this.utilizacao = utilizacao;
         this.ocupacao = false;
         this.agenda = new Agenda();
-
     }
 
     public Imovel(int iptu, int cep,  String rua, int num, TipoImovel tipo, UtilizacaoImovel utilizacao)    
     {
     	this.endereco = new Endereco(rua, num, cep, Estado.BA, "Salvador");
+        this.iptu = iptu;
         this.tipo = tipo;
         this.utilizacao = utilizacao;
         this.ocupacao = false;
@@ -110,4 +110,5 @@ public class Imovel {
         System.out.printf("Agenda do Imóvel \"%s\"\n", this.toString());
         this.agenda.verEventos();
     }
+    public abstract float calcularRefAluguel();
 }

@@ -44,11 +44,14 @@ public class Proprietario {
     	}
     	this.imoveis.add(i);
     }
-    public void alocar(int iptu, int cep,  String rua, int num, Estado estado, String cidade, TipoImovel tipo, UtilizacaoImovel utilizacao) {
+    public void alocar(int iptu, int cep,  String rua, int num,
+                       Estado estado, String cidade, TipoImovel tipo,
+                       UtilizacaoImovel utilizacao, boolean ocupacao,
+                       int area_construida, int area_util) {
     	if(this.getEndereco().equals(rua, num, cep, estado, cidade)) {
     		return;
     	}
-    	Imovel i = new Imovel(iptu, cep, rua, num, estado, cidade, tipo, utilizacao);
+    	Imovel i = new UnidadeAutonoma(iptu, cep, rua, num, estado, cidade, tipo, utilizacao, ocupacao, area_util, area_construida);
     	this.imoveis.add(i);
     }
     public ArrayList<Imovel> getImoveis() {

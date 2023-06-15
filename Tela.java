@@ -61,6 +61,7 @@ public class Tela {
             "Selecionar proprietário",
         };
         break;
+
       case IMOVEL:
         titulo = "Imóvel";
         desc = new String[] {
@@ -69,23 +70,42 @@ public class Tela {
             "Alugar imóveis disponíveis",
             "Listar todos os imóveis",
             "Bloquear um imóvel",
+            "Calcular valor de referência de um imóvel",
         };
         break;
+
       case CADASTRO_IMOVEL:
-        titulo = "Cadastrar Imóvel";
-        desc = new String[] {
-            "Voltar",
-            "IPTU: {0}",
-            "Rua: {0}",
-            "Número: {0}",
-            "CEP: {0}",
-            "Estado: {0}",
-            "Cidade: {0}",
-            "Tipo de imóvel: {0}",
-            "Utilização: {0}",
-            "Terminar Cadastro",
-        };
+        if ((int) App.getMemoria().get(-1) == 1){
+            titulo = "Cadastrar Imóvel (Unidade Compartilhada)";
+            desc = new String[] {
+                "Voltar",
+                "IPTU: {0}",
+                "CEP: {0}",
+                "Rua: {0}",
+                "Número: {0}",
+                "Estado: {0}",
+                "Cidade: {0}",
+                "Tipo de imóvel: {0}",
+                "Utilização: {0}",
+                "Terminar Cadastro",
+            };
+        } else {
+          titulo = "Cadastrar Imóvel (Unidade Autônoma)";
+          desc = new String[] {
+                "Voltar",
+                "IPTU: {0}",
+                "CEP: {0}",
+                "Rua: {0}",
+                "Número: {0}",
+                "Estado: {0}",
+                "Cidade: {0}",
+                "Tipo de imóvel: {0}",
+                "Utilização: {0}",
+                "Terminar Cadastro",
+            };
+        }
         break;
+
       case BLOQUEAR_IMOVEL:
         titulo = "Bloquear imóvel";
         ArrayList<Imovel> imoveis = App.getUsuario().getImoveis();
@@ -99,6 +119,7 @@ public class Tela {
           desc[i+1] = imoveis.get(i).toString();
         }
         break;
+
       case CADASTRO_PROPRIETARIO:
         titulo = "Cadastrar Proprietário";
         desc = new String[] {
@@ -114,9 +135,11 @@ public class Tela {
             "Terminar Cadastro",
         };
         break;
+
       case ALUGAR_IMOVEL:
         titulo = "Alugar Imóvel";
         break;
+
       case LISTAR_IMOVEIS:
         titulo = "Lista de Imóveis";
         lista = App.getListaImoveis();
@@ -126,6 +149,7 @@ public class Tela {
           desc[i+1] = lista[i];
         }
         break;
+
       case SELECIONAR_PROPRIETARIO:
         titulo = "Selecionar Proprietário";
         lista = App.getListaUsuarios();
@@ -134,6 +158,22 @@ public class Tela {
         for (int i = 0; i < lista.length; i++){
           desc[i+1] = lista[i];
         }
+        break;
+      case CALC_VAL_REF_IMOVEL:
+        titulo = "Selecionar Imóvel";
+        lista = App.getListaImoveis();
+        desc = new String[lista.length+1];
+        desc[0] = "Sair";
+        for (int i = 0; i < lista.length; i++){
+          desc[i+1] = lista[i];
+        }
+        break;
+      case ESCOLHA_TIPO_IMOVEL:
+        titulo = "Escolha o tipo de imóvel";
+        desc = new String[3];
+        desc[0] = "Voltar";
+        desc[1] = "Unidade Compartilhada";
+        desc[2] = "Unidade Autônoma";
         break;
       default:
         throw new RuntimeException("ERRO: Unreachable. (changeTela)");

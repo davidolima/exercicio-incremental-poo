@@ -5,34 +5,42 @@ import java.util.HashMap;
 public class App {
   private Tela tela;
   TipoTela tela_atual;
-  Scanner in;
+  static Scanner in;
   boolean running;
   public static HashMap<Integer, Object> buffer; // Buffer de memória
   
   static ArrayList<Proprietario> usuarios; 
   static ArrayList<Imovel> imoveis;
 
-  static String usuario;
-  static String msg = "";
+  static String usuario_selecionado;
+  static Imovel imovel_selecionado;
+  static String msg = "", dbg_msg = "";
 
   public App() {
     // Inicialização
     running = true;
     this.tela_atual = TipoTela.PRINCIPAL;
     this.tela = new Tela();
-    this.usuarios = new ArrayList<Proprietario>();
-    this.imoveis = new ArrayList<Imovel>();
-    this.buffer = new HashMap<Integer, Object>();
-    this.in = new Scanner(System.in);
-    this.usuario = "";
+    App.usuarios = new ArrayList<Proprietario>();
+    App.imoveis = new ArrayList<Imovel>();
+    App.buffer = new HashMap<Integer, Object>();
+    App.in = new Scanner(System.in);
+    App.usuario_selecionado = "";
+    App.imovel_selecionado = null;
     String input;
 
-    //teste
+    // teste --
     Proprietario prop1 = new Proprietario("abc", "abc", "abc", "abc", 1, 2, Estado.BA, "a");
-    Imovel im1 = new Imovel(1,2,"Rua A", 3, Estado.BA, "Salvador", TipoImovel.APARTAMENTO, UtilizacaoImovel.CAMPO);
-    this.usuarios.add(prop1);
-    this.imoveis.add(im1);
-    prop1.alocar(im1);
+    UnidadeAutonoma ua = new UnidadeAutonoma(250, 2, "Rua B", 3, Estado.BA, "Salvador", TipoImovel.APARTAMENTO, UtilizacaoImovel.CAMPO, false, 20, 15);
+    ArrayList<String> l = new ArrayList<String>();
+    l.add("piscina"); l.add("academia"); l.add("salao");
+    Condominio cond = new Condominio("Rua A", 1,2, Estado.BA, "Salvador", l);
+    UnidadeCompartilhada uc = new UnidadeCompartilhada(500, 3, "Rua A", 3, Estado.SP, "São Paulo", TipoImovel.CASA, UtilizacaoImovel.PRAIA, false, "10", cond);
+    App.usuarios.add(prop1);
+    App.imoveis.add(uc);
+    App.imoveis.add(ua);
+    prop1.alocar(ua);
+    // --
 
     while (running) {
       gerenciarInterface(null);
@@ -49,8 +57,13 @@ public class App {
         break;
 
       case CADASTRO_IMOVEL:
+        this.tela_atual = TipoTela.ESCOLHA_TIPO_IMOVEL;
+        break;
+
+      case ESCOLHA_TIPO_IMOVEL:
       case ALUGAR_IMOVEL:
       case LISTAR_IMOVEIS:
+      case CALC_VAL_REF_IMOVEL:
         this.tela_atual = TipoTela.IMOVEL;
         break;
 
@@ -85,6 +98,7 @@ public class App {
             break;
         }
         break;
+
       case PROPRIETARIO:
         switch (input) {
           case "1":
@@ -97,13 +111,14 @@ public class App {
             break;
         }
         break;
+
       case IMOVEL:
         switch (input) {
           case "1":
-            this.tela_atual = TipoTela.CADASTRO_IMOVEL;
+            this.tela_atual = TipoTela.ESCOLHA_TIPO_IMOVEL;
             break;
           case "2":
-            if (!this.usuario.equals("")){
+            if (!App.getUsuario().equals("")){
               this.tela_atual = TipoTela.ALUGAR_IMOVEL;
             } else {
               App.setMsg("É necessário escolher um proprietário para alugar um imóvel.");
@@ -113,11 +128,14 @@ public class App {
             this.tela_atual = TipoTela.LISTAR_IMOVEIS;
             break;
           case "4":
-            if (!this.usuario.equals("")){
+            if (!App.getUsuario().equals("")){
               this.tela_atual = TipoTela.BLOQUEAR_IMOVEL;
             } else {
               this.msg = "É necessário escolher um proprietário para bloquear um imóvel.\n";
             }
+            break;
+          case "5":
+            this.tela_atual = TipoTela.CALC_VAL_REF_IMOVEL;
             break;
           default:
             break;
@@ -127,45 +145,45 @@ public class App {
         switch (input) {
           case "1":
             System.out.printf("> ");
-            valor = this.in.nextLine();
-            this.buffer.put(1, valor);
+            valor = App.in.nextLine();
+            App.buffer.put(1, valor);
             break;
           case "2":
             System.out.printf("> ");
-            valor = this.in.nextLine();
-            this.buffer.put(2, valor);
+            valor = App.in.nextLine();
+            App.buffer.put(2, valor);
             break;
           case "3":
             System.out.printf("> ");
-            valor = this.in.nextLine();
-            this.buffer.put(3, valor);
+            valor = App.in.nextLine();
+            App.buffer.put(3, valor);
             break;
           case "4":
             System.out.printf("> ");
-            valor = this.in.nextLine();
-            this.buffer.put(4, valor);
+            valor = App.in.nextLine();
+            App.buffer.put(4, valor);
             break;
           case "5":
             System.out.printf("> ");
-            num = this.in.nextInt();
-            this.buffer.put(5, num);
+            num = App.in.nextInt();
+            App.buffer.put(5, num);
             break;
           case "6":
             System.out.printf("> ");
-            num = this.in.nextInt();
-            this.buffer.put(6, num);
+            num = App.in.nextInt();
+            App.buffer.put(6, num);
             break;
           case "7":
             // Por enquanto estados serão representados por sua posição
             // no enum.
             System.out.printf("> ");
-            num = this.in.nextInt();
-            this.buffer.put(7, num);
+            num = App.in.nextInt();
+            App.buffer.put(7, num);
             break;
           case "8":
             System.out.printf("> ");
-            valor = this.in.nextLine();
-            this.buffer.put(8, valor);
+            valor = App.in.nextLine();
+            App.buffer.put(8, valor);
             break;
           case "9":
             Proprietario newprop = new Proprietario(
@@ -188,59 +206,74 @@ public class App {
         switch (input) {
           case "1":
             System.out.printf("> ");
-            num = this.in.nextInt();
-            this.buffer.put(1, num);
+            num = App.in.nextInt();
+            App.buffer.put(1, num);
             break;
           case "2":
             System.out.printf("> ");
-            num = this.in.nextInt();
-            this.buffer.put(2, num);
+            num = App.in.nextInt();
+            App.buffer.put(2, num);
             break;
           case "3":
             System.out.printf("> ");
-            valor = this.in.nextLine();
-            this.buffer.put(3, valor);
+            valor = App.in.nextLine();
+            App.buffer.put(3, valor);
             break;
           case "4":
             System.out.printf("> ");
-            num = this.in.nextInt();
-            this.buffer.put(4, num);
+            num = App.in.nextInt();
+            App.buffer.put(4, num);
             break;
           case "5":
             System.out.printf("> ");
-            num = this.in.nextInt();
-            this.buffer.put(5, num);
+            num = App.in.nextInt();
+            App.buffer.put(5, num);
             break;
           case "6":
             System.out.printf("> ");
-            valor = this.in.nextLine();
-            this.buffer.put(6, valor);
+            valor = App.in.nextLine();
+            App.buffer.put(6, valor);
             break;
           case "7":
             // Por enquanto estados serão representados por sua posição
             // no enum.
             System.out.printf("> ");
-            num = this.in.nextInt();
-            this.buffer.put(7, num);
+            num = App.in.nextInt();
+            App.buffer.put(7, num);
             break;
           case "8":
             System.out.printf("> ");
-            num = this.in.nextInt();
-            this.buffer.put(8, num);
+            num = App.in.nextInt();
+            App.buffer.put(8, num);
             break;
           case "9":
-            // FIXME: Enums tratados como int por enquanto.
-            Imovel new_imovel = new Imovel(
-                                        (int) App.buffer.get(1),
-                                        (int) App.buffer.get(2),
-                                        (String) App.buffer.get(3),
-                                        (int) App.buffer.get(4),
-                                        Estado.values()[(int) App.buffer.get(5)],
-                                        (String) App.buffer.get(6),
-                                        TipoImovel.values()[(int) App.buffer.get(7)],
-                                        UtilizacaoImovel.values()[(int) App.buffer.get(8)]
-                                        );
-            this.imoveis.add(new_imovel);
+            // FIXME: Enums (Como estado e utilizacao) tratados como int por enquanto.
+            Imovel new_imovel;
+            if ((int) App.getMemoria().get(-1) == 1){
+              new_imovel = new UnidadeAutonoma((int) App.buffer.get(1),
+                                                      (int) App.buffer.get(2),
+                                                      (String) App.buffer.get(3),
+                                                      (int) App.buffer.get(4),
+                                                      Estado.values()[(int) App.buffer.get(5)],
+                                                      (String) App.buffer.get(6),
+                                                      TipoImovel.values()[(int) App.buffer.get(7)],
+                                                      UtilizacaoImovel.values()[(int) App.buffer.get(8)],
+                                                      false, 25, 10 // FIXME: ocupacao, area construida e area util.
+                                                      );
+            } else {
+              new_imovel = new UnidadeCompartilhada((int) App.buffer.get(1),
+                                                      (int) App.buffer.get(2),
+                                                      (String) App.buffer.get(3),
+                                                      (int) App.buffer.get(4),
+                                                      Estado.values()[(int) App.buffer.get(5)],
+                                                      (String) App.buffer.get(6),
+                                                      TipoImovel.values()[(int) App.buffer.get(7)],
+                                                      UtilizacaoImovel.values()[(int) App.buffer.get(8)],
+                                                      false, "10", "rua A", 1 // FIXME: condominio escolhivel atraves da interface.
+                                                      );
+
+            }
+            App.imoveis.add(new_imovel);
             if (!App.getNomeUsuario().equals("")){
               App.getUsuario().alocar(new_imovel);
             }
@@ -251,27 +284,35 @@ public class App {
             break;
         }
         break;
-      case ALUGAR_IMOVEL:
+
+      case ALUGAR_IMOVEL: // TODO
         switch (input) {
           default:
             break;
         }
         break;
+
       case LISTAR_IMOVEIS:
         break;
+
       case BLOQUEAR_IMOVEL:
         i = Integer.parseInt(input);
         Imovel imovel = App.getUsuario().getImoveis().get(i-1);
 
         System.out.println("Insira uma data (dd/mm/aaaa):");
         System.out.printf("> ");
-        String[] data = this.in.nextLine().split("/");
+        String[] data = App.in.nextLine().split("/");
 
         App.getUsuario().bloquearImovel(imovel.getEndereco(),
                                         Integer.parseInt(data[0]),
                                         Integer.parseInt(data[1]),
                                         Integer.parseInt(data[2]));
         tela.changeTela(TipoTela.BLOQUEAR_IMOVEL);
+        break;
+      case ESCOLHA_TIPO_IMOVEL:
+        i = Integer.parseInt(input);
+        App.buffer.put(-1, i);
+        this.tela_atual = TipoTela.CADASTRO_IMOVEL;
         break;
       case SELECIONAR_PROPRIETARIO:
         // Se pensamor em muitos usuários, precisamos de paginação.
@@ -281,6 +322,18 @@ public class App {
         App.setUsuario(nome);
         gerenciarVoltar();
         break;
+
+      case CALC_VAL_REF_IMOVEL:
+        i = Integer.parseInt(input);
+        System.out.printf("> Indice: ");
+        int indice_saz = App.in.nextInt();
+        App.in.nextLine();
+        Imovel im = App.getImoveis().get(i-1);
+
+        // ref + ref*indice
+        float val_ref = im.calcularRefAluguel() + App.calcTaxaSazonalidade(im, indice_saz);
+        App.setMsg(String.format("Valor de referência: %.2f + %.2f = %.2f",im.calcularRefAluguel(),App.calcTaxaSazonalidade(im, indice_saz), val_ref));
+        break;
       default:
         throw new RuntimeException("Erro: Unreachable. (gerenciarInput)");
     }
@@ -288,10 +341,13 @@ public class App {
 
   private void gerenciarInterface(String arg) {
     tela.changeTela(this.tela_atual);
-    System.out.print(this.msg);
+    if (!App.dbg_msg.equals("")){
+      System.out.print("[DEBUG] "+App.dbg_msg);
+    }
+    System.out.print(App.msg);
     System.out.print(tela.toString());
     System.out.print("Escolha uma opção: ");
-    this.msg = "";
+    App.msg = "";
  }
 
   public static ArrayList<Imovel> getImoveis(){
@@ -320,14 +376,17 @@ public class App {
     return App.buffer;
   }
   public static void setUsuario(String nome){
-    App.usuario = nome;
+    App.usuario_selecionado = nome;
+  }
+  public static void setImovel(Imovel imovel){
+    App.imovel_selecionado = imovel;
   }
   public static String getNomeUsuario(){
-    return App.usuario;
+    return App.usuario_selecionado;
   }
   public static Proprietario getUsuario(){
     for (Proprietario p : App.usuarios){
-      if (p.getNome().equals(App.usuario)){
+      if (p.getNome().equals(App.usuario_selecionado)){
         return p;
       }
     }
@@ -338,5 +397,37 @@ public class App {
   }
   public static void setMsg(String newMsg){
     App.msg = newMsg + "\n";
+  }
+  public static void setDbgMsg(Object newMsg){
+    App.dbg_msg = String.valueOf(newMsg) + "\n";
+  }
+  private static float calcTaxaSazonalidade(Imovel im, int indice){
+    if (im instanceof UnidadeAutonoma){
+      im = (UnidadeAutonoma) im;
+      App.setDbgMsg("UnidadeAutonoma");
+    } else if (im instanceof UnidadeCompartilhada){
+      im = (UnidadeCompartilhada) im;
+      App.setDbgMsg("UnidadeCompartilhada");
+    }
+    float r = im.calcularRefAluguel();
+    switch (indice){
+      case 1:
+        r *= 0.20f;
+        break;
+      case 2:
+        r *= 0.15f;
+        break;
+      case 3:
+        r *= 0.10f;
+        break;
+      case 4:
+        r *= 0.05f;
+        break;
+      default:
+        r *= 0;
+        break;
+    }
+
+    return r; // valor_ref * indice
   }
 }
