@@ -50,6 +50,7 @@ public class Tela {
           "Sair/Encerrar programa",
           "Proprietário",
           "Imóvel",
+          "Condomínio",
         };
         break;
 
@@ -87,6 +88,9 @@ public class Tela {
                 "Cidade: {0}",
                 "Tipo de imóvel: {0}",
                 "Utilização: {0}",
+                "Identificação (Condomínio): {0}",
+                "Rua (Condomínio): {0}",
+                "Número (Condomínio): {0}",
                 "Terminar Cadastro",
             };
         } else {
@@ -101,6 +105,8 @@ public class Tela {
                 "Cidade: {0}",
                 "Tipo de imóvel: {0}",
                 "Utilização: {0}",
+                "Área útil: {0}",
+                "Área consruida: {0}",
                 "Terminar Cadastro",
             };
         }
@@ -143,6 +149,16 @@ public class Tela {
       case LISTAR_IMOVEIS:
         titulo = "Lista de Imóveis";
         lista = App.getListaImoveis();
+        desc = new String[lista.length+1];
+        desc[0] = "Sair";
+        for (int i = 0; i < lista.length; i++){
+          desc[i+1] = lista[i];
+        }
+        break;
+
+      case LISTAR_CONDOMINIO:
+        titulo = "Lista de Condomínios";
+        lista = App.getListaCondominios();
         desc = new String[lista.length+1];
         desc[0] = "Sair";
         for (int i = 0; i < lista.length; i++){

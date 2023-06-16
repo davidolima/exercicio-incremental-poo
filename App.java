@@ -11,6 +11,7 @@ public class App {
   
   static ArrayList<Proprietario> usuarios; 
   static ArrayList<Imovel> imoveis;
+  static ArrayList<Condominio> condominios;
 
   static String usuario_selecionado;
   static Imovel imovel_selecionado;
@@ -23,6 +24,7 @@ public class App {
     this.tela = new Tela();
     App.usuarios = new ArrayList<Proprietario>();
     App.imoveis = new ArrayList<Imovel>();
+    App.condominios = new ArrayList<Condominio>();
     App.buffer = new HashMap<Integer, Object>();
     App.in = new Scanner(System.in);
     App.usuario_selecionado = "";
@@ -39,6 +41,7 @@ public class App {
     App.usuarios.add(prop1);
     App.imoveis.add(uc);
     App.imoveis.add(ua);
+    App.condominios.add(cond);
     prop1.alocar(ua);
     // --
 
@@ -94,6 +97,8 @@ public class App {
           case "2":
             this.tela_atual = TipoTela.IMOVEL;
             break;
+          case "3":
+            this.tela_atual = TipoTela.LISTAR_CONDOMINIO;
           default:
             break;
         }
@@ -203,86 +208,169 @@ public class App {
         }
         break;
       case CADASTRO_IMOVEL:
-        switch (input) {
-          case "1":
-            System.out.printf("> ");
-            num = App.in.nextInt();
-            App.buffer.put(1, num);
-            break;
-          case "2":
-            System.out.printf("> ");
-            num = App.in.nextInt();
-            App.buffer.put(2, num);
-            break;
-          case "3":
-            System.out.printf("> ");
-            valor = App.in.nextLine();
-            App.buffer.put(3, valor);
-            break;
-          case "4":
-            System.out.printf("> ");
-            num = App.in.nextInt();
-            App.buffer.put(4, num);
-            break;
-          case "5":
-            System.out.printf("> ");
-            num = App.in.nextInt();
-            App.buffer.put(5, num);
-            break;
-          case "6":
-            System.out.printf("> ");
-            valor = App.in.nextLine();
-            App.buffer.put(6, valor);
-            break;
-          case "7":
-            // Por enquanto estados serão representados por sua posição
-            // no enum.
-            System.out.printf("> ");
-            num = App.in.nextInt();
-            App.buffer.put(7, num);
-            break;
-          case "8":
-            System.out.printf("> ");
-            num = App.in.nextInt();
-            App.buffer.put(8, num);
-            break;
-          case "9":
-            // FIXME: Enums (Como estado e utilizacao) tratados como int por enquanto.
-            Imovel new_imovel;
-            if ((int) App.getMemoria().get(-1) == 1){
-              new_imovel = new UnidadeAutonoma((int) App.buffer.get(1),
-                                                      (int) App.buffer.get(2),
-                                                      (String) App.buffer.get(3),
-                                                      (int) App.buffer.get(4),
-                                                      Estado.values()[(int) App.buffer.get(5)],
-                                                      (String) App.buffer.get(6),
-                                                      TipoImovel.values()[(int) App.buffer.get(7)],
-                                                      UtilizacaoImovel.values()[(int) App.buffer.get(8)],
-                                                      false, 25, 10 // FIXME: ocupacao, area construida e area util.
-                                                      );
-            } else {
-              new_imovel = new UnidadeCompartilhada((int) App.buffer.get(1),
-                                                      (int) App.buffer.get(2),
-                                                      (String) App.buffer.get(3),
-                                                      (int) App.buffer.get(4),
-                                                      Estado.values()[(int) App.buffer.get(5)],
-                                                      (String) App.buffer.get(6),
-                                                      TipoImovel.values()[(int) App.buffer.get(7)],
-                                                      UtilizacaoImovel.values()[(int) App.buffer.get(8)],
-                                                      false, "10", "rua A", 1 // FIXME: condominio escolhivel atraves da interface.
-                                                      );
+        if ((int) App.getMemoria().get(-1) != 1){
+          switch (input) {
+              case "1":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(1, num);
+                break;
+              case "2":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(2, num);
+                break;
+              case "3":
+                System.out.printf("> ");
+                valor = App.in.nextLine();
+                App.buffer.put(3, valor);
+                break;
+              case "4":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(4, num);
+                break;
+              case "5":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(5, num);
+                break;
+              case "6":
+                System.out.printf("> ");
+                valor = App.in.nextLine();
+                App.buffer.put(6, valor);
+                break;
+              case "7":
+                // Por enquanto estados serão representados por sua posição
+                // no enum.
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(7, num);
+                break;
+              case "8":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(8, num);
+                break;
+              case "9":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(9, num);
+                break;
+              case "10":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(10, num);
+                break;
+              case "11":
+                // FIXME: Enums (Como estado e utilizacao) tratados como int por enquanto.
+                Imovel new_imovel = new UnidadeAutonoma((int) App.buffer.get(1),
+                                             (int) App.buffer.get(2),
+                                             (String) App.buffer.get(3),
+                                             (int) App.buffer.get(4),
+                                             Estado.values()[(int) App.buffer.get(5)],
+                                             (String) App.buffer.get(6),
+                                             TipoImovel.values()[(int) App.buffer.get(7)],
+                                             UtilizacaoImovel.values()[(int) App.buffer.get(8)],
+                                             false,
+                                             (int) App.buffer.get(9),
+                                             (int) App.buffer.get(10)
+                                             );
 
-            }
-            App.imoveis.add(new_imovel);
-            if (!App.getNomeUsuario().equals("")){
-              App.getUsuario().alocar(new_imovel);
-            }
-            App.limparMem();
-            this.gerenciarVoltar();
-            break;
-          default:
-            break;
-        }
+                App.imoveis.add(new_imovel);
+                if (!App.getNomeUsuario().equals("")){
+                  App.getUsuario().alocar(new_imovel);
+                }
+                App.limparMem();
+                this.gerenciarVoltar();
+                break;
+            default:
+                break;
+          }
+        } else {
+          switch (input) {
+              case "1":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(1, num);
+                break;
+              case "2":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(2, num);
+                break;
+              case "3":
+                System.out.printf("> ");
+                valor = App.in.nextLine();
+                App.buffer.put(3, valor);
+                break;
+              case "4":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(4, num);
+                break;
+              case "5":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(5, num);
+                break;
+              case "6":
+                System.out.printf("> ");
+                valor = App.in.nextLine();
+                App.buffer.put(6, valor);
+                break;
+              case "7":
+                // Por enquanto estados serão representados por sua posição
+                // no enum.
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(7, num);
+                break;
+              case "8":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(8, num);
+                break;
+              case "9":
+                System.out.printf("> ");
+                valor = App.in.nextLine();
+                App.buffer.put(9, valor);
+                break;
+              case "10":
+                System.out.printf("> ");
+                valor = App.in.nextLine();
+                App.buffer.put(10, valor);
+                break;
+              case "11":
+                System.out.printf("> ");
+                num = App.in.nextInt();
+                App.buffer.put(11, num);
+                break;
+              case "12":
+                Imovel new_imovel = new UnidadeCompartilhada((int) App.buffer.get(1),
+                                                      (int) App.buffer.get(2),
+                                                      (String) App.buffer.get(3),
+                                                      (int) App.buffer.get(4),
+                                                      Estado.values()[(int) App.buffer.get(5)],
+                                                      (String) App.buffer.get(6),
+                                                      TipoImovel.values()[(int) App.buffer.get(7)],
+                                                      UtilizacaoImovel.values()[(int) App.buffer.get(8)],
+                                                      false,
+                                                      (String) App.buffer.get(9),
+                                                      (String) App.buffer.get(10),
+                                                      (int) App.buffer.get(11)
+                                                      );
+                App.imoveis.add(new_imovel);
+                if (!App.getNomeUsuario().equals("")){
+                  App.getUsuario().alocar(new_imovel);
+                }
+                App.limparMem();
+                this.gerenciarVoltar();
+                break;
+              default:
+                break;
+              }
+           }
         break;
 
       case ALUGAR_IMOVEL: // TODO
@@ -293,6 +381,9 @@ public class App {
         break;
 
       case LISTAR_IMOVEIS:
+        break;
+
+      case LISTAR_CONDOMINIO:
         break;
 
       case BLOQUEAR_IMOVEL:
@@ -359,6 +450,14 @@ public class App {
   public static String[] getListaUsuarios(){
     String[] r = new String[App.usuarios.size()];
     for (int i = 0; i < App.usuarios.size(); i++){
+      String x = App.usuarios.get(i).getNome();
+      r[i] = x;
+    }
+    return r;
+  }
+  public static String[] getListaCondominios(){
+    String[] r = new String[App.usuarios.size()];
+    for (int i = 0; i < App.condominios.size(); i++){
       String x = App.usuarios.get(i).getNome();
       r[i] = x;
     }
