@@ -30,6 +30,7 @@ public class Agenda{
         dia_a_alugar.set(a,m,d);
         if (!this.datas_alugadas.contains(dia_a_alugar)){
             this.datas_alugadas.add(dia_a_alugar);
+            System.out.println(this.datas_alugadas.size());
             return true;
         }
         return false;
@@ -46,7 +47,12 @@ public class Agenda{
         }
     }
 
-    public boolean checarDisponibilidade(int d, int m, int a){
+    public boolean checarDisponibilidade(int d, int m, int a){ // Dia
+        System.out.println(this.datas_alugadas);
+        System.out.println(this.datas_alugadas.size() + " " + this.datas_bloqueadas.size());
+        if (this.datas_alugadas.size() == 0 && this.datas_bloqueadas.size() == 0){
+            return true;
+        }
         Calendar dia = Calendar.getInstance();
         dia.set(a,m,d);
         for (int i = 0; i <= Math.max(this.datas_alugadas.size(),this.datas_bloqueadas.size());i++){
@@ -63,6 +69,36 @@ public class Agenda{
                 if (db.get(Calendar.DATE)  == dia.get(Calendar.DATE)
                     && db.get(Calendar.MONTH) == dia.get(Calendar.MONTH)
                     && db.get(Calendar.YEAR)  == dia.get(Calendar.YEAR)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean checarDisponibilidade(int d_inicial, int m_inicial, int a_inicial,
+                                         int d_final, int m_final, int a_final){ // Período
+        if (this.datas_alugadas.size() == 0 && this.datas_bloqueadas.size() == 0){
+            return true;
+        }
+        Calendar dia_inicial = Calendar.getInstance();
+        Calendar dia_final = Calendar.getInstance();
+        dia_inicial.set(a_inicial, m_inicial, d_inicial);
+        dia_final.set(a_final, m_final, d_final);
+        for (int i = 0; i <= Math.max(this.datas_alugadas.size(),this.datas_bloqueadas.size());i++){
+            if (i < this.datas_alugadas.size()){
+                Calendar da = this.datas_alugadas.get(i);
+                if (   dia_inicial.get(Calendar.DATE)  <= da.get(Calendar.DATE)  && da.get(Calendar.DATE)  <= dia_final.get(Calendar.DATE)
+                    && dia_inicial.get(Calendar.MONTH) <= da.get(Calendar.MONTH) && da.get(Calendar.MONTH) <= dia_final.get(Calendar.MONTH)
+                    && dia_inicial.get(Calendar.YEAR)  <= da.get(Calendar.YEAR)  && da.get(Calendar.YEAR)  <= dia_final.get(Calendar.YEAR)){
+                    return false;
+                }
+            }
+            if (i < this.datas_bloqueadas.size()){
+                Calendar db = this.datas_bloqueadas.get(i);
+                if (   dia_inicial.get(Calendar.DATE)  <= db.get(Calendar.DATE)  && db.get(Calendar.DATE)  <= dia_final.get(Calendar.DATE)
+                    && dia_inicial.get(Calendar.MONTH) <= db.get(Calendar.MONTH) && db.get(Calendar.MONTH) <= dia_final.get(Calendar.MONTH)
+                    && dia_inicial.get(Calendar.YEAR)  <= db.get(Calendar.YEAR)  && db.get(Calendar.YEAR)  <= dia_final.get(Calendar.YEAR)){
                     return false;
                 }
             }

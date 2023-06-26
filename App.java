@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.time.*;
 
 public class App {
   private Tela tela;
@@ -17,7 +18,7 @@ public class App {
   static Imovel imovel_selecionado;
   static String msg = "", dbg_msg = "";
 
-  public App() {
+  public App(boolean gui) {
     // Inicialização
     running = true;
     this.tela_atual = TipoTela.PRINCIPAL;
@@ -45,11 +46,17 @@ public class App {
     prop1.alocar(ua);
     // --
 
-    while (running) {
-      gerenciarInterface(null);
-      input = in.nextLine();
-      gerenciarInput(input);
+    if (gui){
+      while (running) {
+        gerenciarInterface(null);
+        input = in.nextLine();
+        gerenciarInput(input);
+      }
     }
+  }
+
+  public App(){
+    this(true);
   }
 
   private void gerenciarVoltar(){
@@ -422,7 +429,7 @@ public class App {
         Imovel im = App.getImoveis().get(i-1);
 
         // ref + ref*indice
-        float val_ref = im.calcularRefAluguel() + App.calcTaxaSazonalidade(im, indice_saz);
+        float val_ref = App.calcularAluguel(im, indice_saz);
         App.setMsg(String.format("Valor de referência: %.2f + %.2f = %.2f",im.calcularRefAluguel(),App.calcTaxaSazonalidade(im, indice_saz), val_ref));
         break;
       default:
@@ -528,5 +535,53 @@ public class App {
     }
 
     return r; // valor_ref * indice
+  }
+
+  public static float calcularAluguel(Imovel im, int indice_saz){
+    return im.calcularRefAluguel() + App.calcTaxaSazonalidade(im, indice_saz);
+  }
+
+  public static boolean disponibilidadeImovel(String rua, int num, int cep, Estado estado, String cidade, int d, int m, int a){
+    Endereco e = new Endereco(rua, num, cep, estado, cidade);
+    for (Imovel i : App.imoveis){
+      if (i.getEndereco().equals(e) && i.checarDisponibilidade(d, m, a)){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean disponibilidadeImovel(String rua, int num, int cep, Estado estado, String cidade,
+                                       int d1, int m1, int a1, int d2, int m2, int a2){
+    Endereco e = new Endereco(rua, num, cep, estado, cidade);
+    for (Imovel i : App.imoveis){
+      if (i.getEndereco().equals(e) && i.checarDisponibilidade(d1, m1, a1, d2, m2, a2)){
+        return true;
+      }
+    }
+    return false;
+  }
+  public static float aluguelImovel(String rua, int num, int cep, Estado estado, String cidade, int d, int m, int a, int indice_saz){
+    Endereco e = new Endereco(rua, num, cep, estado, cidade);
+    for (Imovel i : App.imoveis){
+      if (i.getEndereco().equals(e)){
+        return App.calcularAluguel(i, indice_saz);
+      }
+    }
+    return -1.0f;
+  }
+
+  public static float aluguelImovel(String rua, int num, int cep, Estado estado, String cidade,
+                             int d1, int m1, int a1, int d2, int m2, int a2, int indice_saz){
+    Endereco e = new Endereco(rua, num, cep, estado, cidade);
+    LocalDate data_inicial = LocalDate.of(a1,m1,d1);
+    LocalDate data_final = LocalDate.of(a2,m2,d2);
+    long n_dias = Duration.between(data_inicial, data_final).toDays();
+    for (Imovel i : App.imoveis){
+      if (i.getEndereco().equals(e)){
+        return App.calcularAluguel(i, indice_saz) * n_dias; // Aluguel por dia
+      }
+    }
+    return -1.0f;
   }
 }

@@ -106,6 +106,14 @@ public abstract class Imovel {
         }
         return false;
     }
+
+    public boolean checarDisponibilidade(int d1, int m1, int a1,int d2, int m2, int a2){
+        if (this.agenda.checarDisponibilidade(d1, m1, a1, d2, m2, a2)){
+            return true;
+        }
+        return false;
+    }
+
     public void verAgenda(){
         System.out.printf("Agenda do Imóvel \"%s\"\n", this.toString());
         this.agenda.verEventos();
