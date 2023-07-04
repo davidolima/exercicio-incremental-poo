@@ -215,7 +215,7 @@ public class App {
                                             );
 
             for (Proprietario p : App.usuarios){
-              if (p.getCpf().equals(newprop.getCpf())){ // Mesma pessoa
+              if (p.igual(newprop)){ // Mesma pessoa
                 throw new UsuarioExistenteException(p, newprop);
               }
             }
