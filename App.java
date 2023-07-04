@@ -50,7 +50,11 @@ public class App {
       while (running) {
         gerenciarInterface(null);
         input = in.nextLine();
-        gerenciarInput(input);
+        try {
+          gerenciarInput(input);
+        } catch(UsuarioExistenteException e) {
+          App.setMsg("ERRO:" + e);
+        }
       }
     }
   }
@@ -87,7 +91,7 @@ public class App {
     }
   }
 
-  private void gerenciarInput(String input) {
+  private void gerenciarInput(String input) throws UsuarioExistenteException {
     String valor;
     int num, i;
 
@@ -153,6 +157,7 @@ public class App {
             break;
         }
         break;
+
       case CADASTRO_PROPRIETARIO:
         switch (input) {
           case "1":
@@ -208,12 +213,20 @@ public class App {
                                             Estado.values()[(int) App.buffer.get(7)],
                                             (String) App.buffer.get(8)
                                             );
-            this.usuarios.add(newprop);
+
+            for (Proprietario p : App.usuarios){
+              if (p.getCpf().equals(newprop.getCpf())){ // Mesma pessoa
+                throw new UsuarioExistenteException(p, newprop);
+              }
+            }
+
+            App.usuarios.add(newprop);
             App.limparMem();
-            this.gerenciarVoltar();
+            //this.gerenciarVoltar();
             break;
         }
         break;
+
       case CADASTRO_IMOVEL:
         if ((int) App.getMemoria().get(-1) != 1){
           switch (input) {

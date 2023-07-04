@@ -109,4 +109,7 @@ public class Proprietario {
         }
         return false;
     }
+    public boolean igual(Proprietario p){
+        return this.cpf == p.getCpf();
+    }
 }
